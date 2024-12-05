@@ -1,0 +1,12 @@
+[90m= [39m[34;4mIlluminate\Database\Eloquent\Collection[39;24m {#6221
+    [34mall[39m: [
+      [34;4mSpatie\Permission\Models\Role[39;24m {#6222
+        [34mid[39m: [35m1[39m,
+        [34mname[39m: "[32mcliente[39m",
+        [34mguard_name[39m: "[32mweb[39m",
+        [34mcreated_at[39m: "[32m2024-12-05 11:28:06[39m",
+        [34mupdated_at[39m: "[32m2024-12-05 11:28:06[39m",
+      },
+    ],
+  }
+
