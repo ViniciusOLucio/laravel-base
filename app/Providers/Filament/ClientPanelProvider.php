@@ -16,19 +16,18 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-class AdminPanelProvider extends PanelProvider
+class ClientPanelProvider   extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
             ->default()
-            ->id('admin')
-            ->path('admin')
+            ->id('cliente')
+            ->path('cliente')
             ->login()
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
@@ -50,13 +49,12 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                'auth', // Middleware padrão do Laravel
-                'filament.role', // Middleware personalizado
+                'auth',
+                'filament.role',
             ]);
     }
     public function canAccess(): bool
     {
-        // Verifica se o usuário tem a role "admin"
-        return auth()->check() && auth()->user()->hasRole('admin');
+        return auth()->check() && auth()->user()->hasRole('cliente');
     }
 }
