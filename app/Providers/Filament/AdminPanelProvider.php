@@ -51,7 +51,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 'auth', // Middleware padrão do Laravel
-                'filament.role', // Middleware personalizado
             ]);
     }
     public function canAccess(): bool

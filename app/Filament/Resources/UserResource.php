@@ -9,6 +9,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
@@ -16,6 +18,30 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function canEdit(Model $record): bool
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $user->hasRole('super_admin');
+
+    }
+
+    public static function canAccess(): bool
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $user->hasRole(['super_admin', 'admin', 'lawyer']);
+    }
+
+    public static function canCreate(): bool
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $user->hasRole('super_admin');
+    }
 
     public static function form(Form $form): Form
     {
