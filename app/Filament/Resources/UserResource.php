@@ -16,8 +16,10 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $pluralLabel = 'Usuários';
+    protected static ?string $label = 'Usuário';
+    protected static ?string $navigationLabel = 'Usuários';
     public static function canEdit(Model $record): bool
     {
         /** @var User $user */
@@ -26,6 +28,7 @@ class UserResource extends Resource
         return $user->hasRole('super_admin');
 
     }
+
 
     public static function canAccess(): bool
     {
@@ -42,6 +45,16 @@ class UserResource extends Resource
 
         return $user->hasRole('super_admin');
     }
+
+    public static function canManageRecord(): bool
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $user->hasRole(['admin', 'super_admin']);
+    }
+
+
 
     public static function form(Form $form): Form
     {
@@ -77,18 +90,24 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                ->label('Nome'),
                 Tables\Columns\TextColumn::make('email')
+                    ->label('E-mail')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
+                    ->visible(fn () => self::canManageRecord())
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('cpf')
+                    ->label('CPF')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label('Telefone')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles')
                     ->label('Permissão')
+                    ->visible(fn () => self::canManageRecord())
                     ->formatStateUsing(function ($state, $record) {
                         if ($record->relationLoaded('roles') && $record->roles->isNotEmpty()) {
                             return $record->roles->pluck('name')->join(', ');
@@ -96,22 +115,27 @@ class UserResource extends Resource
                         return 'Nenhuma Role';
                     }),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->visible(fn () => self::canManageRecord())
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->visible(fn () => self::canManageRecord())
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([])
+            ->filters([
+            ])
+
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->visible(fn () => auth()->check() && auth()->user()->hasRole('admin')),
+                    ->visible(fn () => self::canManageRecord())
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()
-                    ->visible(fn () => auth()->check() && auth()->user()->hasRole('admin')),
+                    ->visible(fn () => self::canManageRecord())
+
             ]);
     }
 
